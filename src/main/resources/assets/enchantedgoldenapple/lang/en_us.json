@@ -1,0 +1,13 @@
+{
+  "itemGroup.enchantedgoldenapple": "Example Mod Tab",
+  "block.enchantedgoldenapple.example_block": "Example Block",
+  "item.enchantedgoldenapple.example_item": "Example Item",
+
+  "enchantedgoldenapple.configuration.title": "Enchanted Golden Apple Configs",
+  "enchantedgoldenapple.configuration.section.enchantedgoldenapple.common.toml": "Enchanted Golden Apple Configs",
+  "enchantedgoldenapple.configuration.section.enchantedgoldenapple.common.toml.title": "Enchanted Golden Apple Configs",
+  "enchantedgoldenapple.configuration.items": "Item List",
+  "enchantedgoldenapple.configuration.logDirtBlock": "Log Dirt Block",
+  "enchantedgoldenapple.configuration.magicNumberIntroduction": "Magic Number Text",
+  "enchantedgoldenapple.configuration.magicNumber": "Magic Number"
+}
