@@ -1,20 +1,14 @@
 package com.cham.enchantedgoldenapple;
 
-import com.cham.enchantedgoldenapple.effect.ModMobEffects;
-import net.minecraft.core.Holder;
+import com.cham.enchantedgoldenapple.effect.*;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import org.slf4j.Logger;
-import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 
 import com.mojang.logging.LogUtils;
 
@@ -28,8 +22,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-import static net.minecraft.util.Mth.ceil;
-
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(EnchantedGoldenApple.MODID)
 public class EnchantedGoldenApple {
@@ -40,8 +32,16 @@ public class EnchantedGoldenApple {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModItemComponents::onModifyDefaultComponents);
         ModMobEffects.register(modEventBus);
+        NeoForge.EVENT_BUS.register(new SlayerEffectHandler());
+        NeoForge.EVENT_BUS.register(new ResistanceEffectHandler());
+        NeoForge.EVENT_BUS.register(new LureEffectHandler());
+        NeoForge.EVENT_BUS.register(new SunderingEffectHandler());
+        NeoForge.EVENT_BUS.register(new AblazeEffectHandler());
+        NeoForge.EVENT_BUS.register(new FrostTouchEffectHandler());
+        NeoForge.EVENT_BUS.register(new SoulSpeedEffectHandler());
+        NeoForge.EVENT_BUS.register(new AttractEffectHandler());
+        NeoForge.EVENT_BUS.register(new PiercingEffectHandler());
         modEventBus.addListener(GatherDataEvent.Client.class,ModDataGenerator::gatherData);
-
         NeoForge.EVENT_BUS.register(this);
     }
 
@@ -76,73 +76,17 @@ public class EnchantedGoldenApple {
     }
 
     @SubscribeEvent
-    public void onGoldenAppleEaten(LivingEntityUseItemEvent event) {
+    public void onGoldenAppleEaten(LivingEntityUseItemEvent.Finish event) {
         ItemStack stack = event.getItem();
         if(!stack.is(Items.GOLDEN_APPLE)) {
             return;
         }
 
         LivingEntity entity = event.getEntity();
-        if(!(entity.level() instanceof ServerLevel))
+        if((entity.level().isClientSide()))
             return;
         ItemEnchantments enchantments = stack.getAllEnchantments(entity.registryAccess().lookupOrThrow(Registries.ENCHANTMENT));
-        for(Entry<Holder<Enchantment>> entry:enchantments.entrySet()) {
-            Holder<Enchantment> enchantment = entry.getKey();
-            int level = entry.getIntValue();
-            int effectLevel = ceil((float) level /2);
-            int effectTime = level*10;
-            if (enchantment.is(Enchantments.PROTECTION)) {
-                entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, effectTime, effectLevel));
-            } else if (enchantment.is(Enchantments.FIRE_PROTECTION)) {
-                entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, effectTime, effectLevel));
-            } else if (enchantment.is(Enchantments.FEATHER_FALLING)) {
-                entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, effectTime, effectLevel));
-            } else if (enchantment.is(Enchantments.BLAST_PROTECTION)) {
-            } else if (enchantment.is(Enchantments.PROJECTILE_PROTECTION)) {
-            } else if (enchantment.is(Enchantments.RESPIRATION)) {
-                entity.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, effectTime, effectLevel));
-            } else if (enchantment.is(Enchantments.AQUA_AFFINITY)) {
-                entity.addEffect(new MobEffectInstance(ModMobEffects.AQUA_AFINITEETH, effectTime, effectLevel));
-            } else if (enchantment.is(Enchantments.THORNS)) {
-            } else if (enchantment.is(Enchantments.DEPTH_STRIDER)) {
-            } else if (enchantment.is(Enchantments.FROST_WALKER)) {
-            } else if (enchantment.is(Enchantments.BINDING_CURSE)) {
-            } else if (enchantment.is(Enchantments.SOUL_SPEED)) {
-            } else if (enchantment.is(Enchantments.SWIFT_SNEAK)) {
-            } else if (enchantment.is(Enchantments.SHARPNESS)) {
-            } else if (enchantment.is(Enchantments.SMITE)) {
-            } else if (enchantment.is(Enchantments.BANE_OF_ARTHROPODS)) {
-            } else if (enchantment.is(Enchantments.KNOCKBACK)) {
-            } else if (enchantment.is(Enchantments.FIRE_ASPECT)) {
-            } else if (enchantment.is(Enchantments.LOOTING)) {
-            } else if (enchantment.is(Enchantments.SWEEPING_EDGE)) {
-            } else if (enchantment.is(Enchantments.EFFICIENCY)) {
-            } else if (enchantment.is(Enchantments.SILK_TOUCH)) {
-            } else if (enchantment.is(Enchantments.UNBREAKING)) {
-            } else if (enchantment.is(Enchantments.FORTUNE)) {
-            } else if (enchantment.is(Enchantments.POWER)) {
-            } else if (enchantment.is(Enchantments.PUNCH)) {
-            } else if (enchantment.is(Enchantments.FLAME)) {
-            } else if (enchantment.is(Enchantments.INFINITY)) {
-            } else if (enchantment.is(Enchantments.LUCK_OF_THE_SEA)) {
-            } else if (enchantment.is(Enchantments.LURE)) {
-            } else if (enchantment.is(Enchantments.LOYALTY)) {
-            } else if (enchantment.is(Enchantments.IMPALING)) {
-            } else if (enchantment.is(Enchantments.RIPTIDE)) {
-            } else if (enchantment.is(Enchantments.CHANNELING)) {
-            } else if (enchantment.is(Enchantments.MULTISHOT)) {
-            } else if (enchantment.is(Enchantments.QUICK_CHARGE)) {
-            } else if (enchantment.is(Enchantments.PIERCING)) {
-            } else if (enchantment.is(Enchantments.DENSITY)) {
-            } else if (enchantment.is(Enchantments.BREACH)) {
-            } else if (enchantment.is(Enchantments.WIND_BURST)) {
-            } else if (enchantment.is(Enchantments.LUNGE)) {
-            } else if (enchantment.is(Enchantments.MENDING)) {
-            } else if (enchantment.is(Enchantments.VANISHING_CURSE)) {
-            } else {
-                // TODO(占位): 非原版魔咒（其它模组注册的），要区分就用 enchantment.unwrapKey()
-            }
-        }
+        GoldenAppleEffectTable.applyTo(entity, enchantments);
 
     }
 }
