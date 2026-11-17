@@ -17,10 +17,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(EnchantedGoldenApple.MODID)
@@ -29,7 +26,6 @@ public class EnchantedGoldenApple {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public EnchantedGoldenApple(IEventBus modEventBus, ModContainer modContainer) {
-        modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(ModItemComponents::onModifyDefaultComponents);
         ModMobEffects.register(modEventBus);
         NeoForge.EVENT_BUS.register(new SlayerEffectHandler());
@@ -41,15 +37,8 @@ public class EnchantedGoldenApple {
         NeoForge.EVENT_BUS.register(new SoulSpeedEffectHandler());
         NeoForge.EVENT_BUS.register(new AttractEffectHandler());
         NeoForge.EVENT_BUS.register(new PiercingEffectHandler());
-        modEventBus.addListener(GatherDataEvent.Client.class,ModDataGenerator::gatherData);
+        modEventBus.addListener(GatherDataEvent.Client.class, ModDataGenerator::gatherData);
         NeoForge.EVENT_BUS.register(this);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        LOGGER.info("HELLO FROM COMMON SETUP");
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
     }
 
     @SubscribeEvent
@@ -68,11 +57,6 @@ public class EnchantedGoldenApple {
                 }
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("HELLO from server starting");
     }
 
     @SubscribeEvent
